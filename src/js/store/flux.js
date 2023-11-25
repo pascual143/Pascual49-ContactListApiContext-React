@@ -1,133 +1,112 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			contacts:[],
-			agenda:"No Agenda Founded",
-			agendas:[],
-			contactEdit:[],
-			// contact:null
+
+			contacts: [],
+			shoes: ["nike", "adidas"] //ejemplo
 		},
 		actions: {
-			addContact: async(newContact) => {
-				let { contacts } = getStore();
-				const url = "https://playground.4geeks.com/apis/fake/contact/";
-				const options = {
-				  method: 'POST',
-				  body: JSON.stringify(newContact),
-				  headers: { 'Content-Type': 'application/json' } 
-				};
-		
-				await fetch(url, options)
-				  .then(res => res.json()) 
-				  .then(response => {
-					console.log('Success: ', JSON.stringify(response));
-					
-				  })
-				  .catch(error => console.log('Error: ', error));
-			  },
-			  getContacts: () => {
-				let {agenda} = getStore()
-				const url = `https://playground.4geeks.com/apis/fake/contact/agenda/${agenda}`;
-				const options = {
-				  method: 'GET',
-				  headers: {
-					'Content-Type': 'application/json'
-				  }
-				};
-		
-				fetch(url, options)
-				  .then(resp => {
-					if (!resp.ok) {
-					  throw new Error("Error");
-					}
-					return resp.json();
-				  })
-				  .then(body => {
-					setStore({ contacts: body });
-				  })
-				  .catch(error => console.log('Error: ', error));
-			  },
-			  getAllAgendas:()=>{
-				
-				const url = "https://playground.4geeks.com/apis/fake/contact/agenda";
-				const options = {
-				  method: 'GET',
-				  headers: {
-					'Content-Type': 'application/json'
-				  }
-				};
-		
-				fetch(url, options)
-				  .then(resp => {
-					if (!resp.ok) {
-					  throw new Error("Error");
-					}
-					return resp.json();
-				  })
-				  .then(body => {
-					setStore({ agendas: body });
-					
-				  })
-				  .catch(error => console.log('Error: ', error));
-			  },
-			  selectAgenda:(el)=>{
-				setStore({agenda:el})
-				let { agenda } = getStore()
-				console.log("LA AGENDA ES" + agenda )
-			  },
-			  updateContact: async(id)=>{
-				let {contactEdit} = getStore()
-				const url = `https://playground.4geeks.com/apis/fake/contact/${id}`;
-				const options = {
-				  method: 'PUT',
-				  body: JSON.stringify(contactEdit),
-				  headers: { 'Content-Type': 'application/json' } 
-				}
-				await fetch(url, options)
-				.then(res => res.json()) 
-				.then(response => {
-				  console.log('Success: ', JSON.stringify(response));
-				  
-				})
-				.catch(error => console.log('Error: ', error));
-			  },
 
-			  setContactEdit: (newContact)=>{
-				setStore({contactEdit: newContact })
-			  },
-			  getContact:async(id)=>{		
-				// console.log(id)
-				const url = `https://playground.4geeks.com/apis/fake/contact/${id}`;
-				const options = {
-				  method: 'GET',
-				  headers: {
-					'Content-Type': 'application/json'
-				  }
-				};
-				await fetch(url, options)
-				.then(res => res.json()) 
-				.then(data => {
-				  console.log('Success: ', JSON.stringify(data));
-				})
-				.catch(error => console.log('Error: ', error));
+			GetContact: (name) => {
+				fetch(`https://playground.4geeks.com/apis/fake/contact/agenda/${name}`)
+					.then((result) => result.json())
+					.then((data) => {
+						let store = getStore()
+						setStore({ ...store, contacts: data });
+						console.log("Contacts obtained successfully: ", data);
+					})
+					.catch((error) => {
+						console.log("Error getting contacts: ", error);
+					});
+
 			},
-			deleteContact:async(id)=>{		
-				console.log(id)
-				const url = `https://playground.4geeks.com/apis/fake/contact/${id}`;
-				const options = {
-				  method: 'DELETE',
-				  headers: {
-					'Content-Type': 'application/json'
-				  }
+
+			createContact: (data) => {
+				console.log("Datos a enviar:", data);
+
+				const actions = getActions();
+				const URL = "https://playground.4geeks.com/apis/fake/contact/";
+				const opt = {
+					method: "POST",
+					headers: {
+						"Content-type": "Application/json",
+					},
+					body: JSON.stringify(data),
 				};
-				await fetch(url, options)
-				.then(res => res.json()) 
-				.then(response => {
-				  console.log('Success: ', JSON.stringify(response));
-				  
+
+				fetch(URL, opt)
+					.then((response) => {
+						console.log("Respuesta:", response);
+						if (response.ok) {
+							actions.GetContact();
+							alert("Contacto creado con éxito");
+						} else {
+							alert("Error al crear contacto");
+						}
+					})
+					.catch((error) => {
+						console.log("Error:", error);
+						alert("Error al crear contacto");
+					});
+			},
+
+
+			deleteContact: (id) => {
+				const actions = getActions();
+				fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`, {
+					method: "DELETE"
 				})
-				.catch(error => console.log('Error: ', error));
-			}
+					.then((response) => {
+						console.log("Respuesta:", response);
+						if (response.ok) {
+							actions.GetContact(); // Actualizar contactos después de la eliminación.
+							alert("Contacto eliminado exitosamente");
+						} else {
+							alert("Error al eliminar contacto");
+						}
+					})
+					.catch((error) => {
+						console.log("Error:", error);
+						alert("Error al eliminar contacto");
+					});
+			},
+
+			updateContact: (id, data) => {
+				const actions = getActions();
+				const URL = `https://playground.4geeks.com/apis/fake/contact/${id}`;
+				const opt = {
+					method: "PUT",
+					headers: {
+						"Content-type": "Application/json",
+					},
+					body: JSON.stringify(data),
+				};
+				fetch(URL, opt)
+					.then((response) => {
+						console.log("Respuesta:", response);
+						if (response.ok) {
+							actions.GetContact(); // Actualizar contactos después de la actualización.
+							alert("Contacto actualizado exitosamente");
+						} else {
+							alert("Error al actualizar contacto");
+						}
+					})
+					.catch((error) => {
+						console.log("Error:", error);
+						alert("Error al actualizar contacto");
+					});
+			},
+
+			GetContactById: (id) => {
+				return fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`)
+					.then((result) => result.json())
+					.catch((error) => {
+						console.log("Error getting contact details: ", error);
+						throw error; // Asegura que los errores se propaguen correctamente
+					});
+			},
+
+
 		}
 	};
 };
