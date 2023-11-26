@@ -13,23 +13,17 @@ export const Edit = () => {
     useEffect(() => {
         // Obtén los detalles del contacto por ID cuando el componente se monta
         actions.GetContactById(id)
-            .then(contactData => {
-                setData(contactData);
+            .then(data => {
+                setData(data);
             })
             .catch(error => {
                 console.error("Error obteniendo detalles del contacto:", error);
             });
     }, [actions, id]);
 
-    const editarContacto = async (event) => {
+    const editContact = async (event) => {
         event.preventDefault();
-        try {
-            await actions.updateContact(id, data);
-            // Lógica adicional después de la actualización exitosa
-        } catch (error) {
-            console.error("Error al actualizar contacto:", error);
-            // Mostrar mensaje de error al usuario
-        }
+        actions.updateContact(id, data);
     };
 
     const info = (event) => {
@@ -66,13 +60,13 @@ export const Edit = () => {
                     </div>
                     <br />
                     <div className="d-grid gap-2">
-                        <button className="btn btn-primary" type="button" onClick={editarContacto}>
-                            Actualizar
+                        <button className="btn btn-primary" type="button" onClick={editContact}>
+                            Update
                         </button>
                     </div>
                     <br />
                     <Link to="/">
-                        <span>Volver a contactos</span>
+                        <span>Come Back Contacts</span>
                     </Link>
                 </li>
             </ul>
