@@ -5,7 +5,6 @@ import ScrollToTop from "./component/scrollToTop";
 import { Create } from "./views/create";
 import { Agenda } from "./views/agenda";
 import { Edit } from "./views/edit";
-import { Single } from "./views/single";
 
 import injectContext from "./store/appContext";
 

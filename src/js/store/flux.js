@@ -93,7 +93,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       GetContactById: (id) => {
-        return fetch("https://playground.4geeks.com/apis/fake/contact/"+ id)
+        return fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`)
           .then((result) => result.json())
 		      .then((data) => {
                 setStore({ contacts: data });
