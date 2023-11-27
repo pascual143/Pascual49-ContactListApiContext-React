@@ -66,9 +66,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
       },
 
-      updateContact: (id, data) => {
+      updateContact: (name, data) => {
         const actions = getActions();
-        const URL = `https://playground.4geeks.com/apis/fake/contact/${id}`;
+        const URL = `https://playground.4geeks.com/apis/fake/contact/${name}`;
         const opt = {
           method: "PUT",
           headers: {
@@ -92,17 +92,16 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
       },
 
-      GetContactById: (id) => {
-        return fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`)
-          .then((result) => result.json())
-		      .then((data) => {
-                setStore({ contacts: data });
-                console.log("Contacts obtained successfully: ", data);
-              })
-          .catch((error) => {
-            console.log("Error getting contact details: ", error);
-            throw error;
-          });
+      GetContactById: async (id) => {
+        try {
+          const result = await fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`);
+          const data = await result.json();
+          setStore({ contacts: data });
+          console.log("Contacts obtained successfully: ", data);
+        } catch (error) {
+          console.log("Error getting contact details: ", error);
+          throw error;
+        }
       },
     },
   };

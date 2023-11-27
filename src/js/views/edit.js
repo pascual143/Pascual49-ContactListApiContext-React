@@ -4,7 +4,7 @@ import { Context } from "../store/appContext";
 
 export const Edit = () => {
     const { store, actions } = useContext(Context);
-    const { id } = useParams();
+    const { name } = useParams();
 
     const [data, setData] = useState({
         full_name: "", email: "", phone: "", address: "", agenda_slug: " "
@@ -12,18 +12,18 @@ export const Edit = () => {
 
     useEffect(() => {
         // Obtén los detalles del contacto por ID cuando el componente se monta
-        actions.GetContactById(id)
-            .then(data => {
-                setData(data);
-            })
-            .catch(error => {
-                console.error("Error obteniendo detalles del contacto:", error);
-            });
-    }, [actions, id]);
+        actions.GetContact(name)
+             .then(data => {
+                 setData(data);
+             })
+             .catch(error => {
+                 console.error("Error obteniendo detalles del contacto:", error);
+             });
+    }, [actions, name]);
 
     const editContact = async (event) => {
         event.preventDefault();
-        actions.updateContact(id, data);
+        actions.updateContact(name, data);
     };
 
     const info = (event) => {
