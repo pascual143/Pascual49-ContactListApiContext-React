@@ -1,110 +1,95 @@
 const getState = ({ getStore, getActions, setStore }) => {
-  return {
-    store: {
-      contacts: [],
-    },
-    actions: {
-      GetContact: (name) => {
-        fetch(`https://playground.4geeks.com/apis/fake/contact/agenda/${name}`)
-          .then((result) => result.json())
-          .then((data) => {
-            let store = getStore();
-            setStore({ ...store, contacts: data });
-            console.log("Contacts obtained successfully: ", data);
-          })
-          .catch((error) => {
-            console.log("Error getting contacts: ", error);
-          });
-      },
+	return {
+		store: {
+			/* YOUR "GLOBAL" STATES HERE! */
+			agendas: [],
+			currentUser: "",
+			contacts: [],
+		},
+		actions: {
+			// Get all users (agenda_slugs).
+			loadAgendas: () => {
+				fetch("https://playground.4geeks.com/apis/fake/contact/agenda")
+				.then(response => response.json())
+				.then(users => setStore( { "agendas": users } ));
+			},
 
-      createContact: (data) => {
-        console.log("Data to send:", data);
+			setUser: (user) => {
+				setStore( {"currentUser": user} );
+				getActions().loadContacts(user)
+			},
 
-        const actions = getActions();
-        const URL = "https://playground.4geeks.com/apis/fake/contact/";
-        const opt = {
-          method: "POST",
-          headers: {
-            "Content-type": "Application/json",
-          },
-          body: JSON.stringify(data),
-        };
+			// Load contacts for current user.
+			loadContacts: (currentUser) => {
+				fetch(`https://playground.4geeks.com/apis/fake/contact/agenda/${currentUser}`)
+				.then(response => response.json())
+				.then(contactList => setStore(  {"contacts": [...contactList]}  ));
+			},
 
-        fetch(URL, opt)
-          .then((response) => {
-            console.log("Respuesta:", response);
-            if (response.ok) {
-              actions.GetContact();
-              alert("Contact created successfully");
-            } else {
-              alert("ERROR to create a contact");
-            }
-          })
-          .catch((error) => {
-            console.log("Error:", error);
-            alert("ERROR to create a contact");
-          });
-      },
+			// Add new contact to currentUser's contacts.
+			addContact: (newContact) => {
+				fetch(`https://playground.4geeks.com/apis/fake/contact`, {
+					method: "POST",
+					body: JSON.stringify({
+						"full_name": newContact.fullName,
+						"email": newContact.email,
+						"agenda_slug": newContact.user,
+						"address": newContact.address,
+						"phone": newContact.phone
+					}),
 
-      deleteContact: (id) => {
-        const actions = getActions();
-        fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`, {
-          method: "DELETE",
-        })
-          .then((response) => {
-            console.log("Respuesta:", response);
-            if (response.ok) {
-              actions.GetContact(); // Actualizar contactos después de la eliminación.
-              alert("Contact deleted successfully");
-            } else {
-              alert("ERROR to delete contact");
-            }
-          })
-          .catch((error) => {
-            console.log("Error:", error);
-            alert("ERROR to delete contact");
-          });
-      },
+					headers: {
+						"Content-Type": "application/json"
+					}
+				})
+				.then(response => response.json())
+				.then(data => {
+					getActions().loadContacts(getStore().currentUser)
+				})
+			},
 
-      updateContact: (name, data) => {
-        const actions = getActions();
-        const URL = `https://playground.4geeks.com/apis/fake/contact/${name}`;
-        const opt = {
-          method: "PUT",
-          headers: {
-            "Content-type": "Application/json",
-          },
-          body: JSON.stringify(data),
-        };
-        fetch(URL, opt)
-          .then((response) => {
-            console.log("Responding:", response);
-            if (response.ok) {
-              actions.GetContact();
-              alert("Contact updated");
-            } else {
-              alert("Contact update ERROR");
-            }
-          })
-          .catch((error) => {
-            console.log("Error:", error);
-            alert("Contact update ERROR");
-          });
-      },
+			// Delete a contact from user's list.
+			deleteContact: (contactId) => {
+				fetch(`https://playground.4geeks.com/apis/fake/contact/${contactId}`, {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json"
+					}
+				})
+				.then(response => response.json())
+				.then(data => {
+					getActions().loadContacts(getStore().currentUser)
+				})				
+			},
 
-      GetContactById: async (id) => {
-        try {
-          const result = await fetch(`https://playground.4geeks.com/apis/fake/contact/${id}`);
-          const data = await result.json();
-          setStore({ contacts: data });
-          console.log("Contacts obtained successfully: ", data);
-        } catch (error) {
-          console.log("Error getting contact details: ", error);
-          throw error;
-        }
-      },
-    },
-  };
+			// Edit a contact from user's list.
+			editContact: (contact) => {
+				fetch(`https://playground.4geeks.com/apis/fake/contact/${contact.id}`, {
+					method: "PUT",
+					body: JSON.stringify({
+						"full_name": contact.fullName,
+						"email": contact.email,
+						"agenda_slug": contact.user,
+						"address": contact.address,
+						"phone": contact.phone
+					}),
+
+					headers: {
+						"Content-Type": "application/json"
+					}
+				})
+				.then(response => response.json())
+				.then(data => {
+					getActions().loadContacts(getStore().currentUser)
+				})				
+			},
+			selectAgenda:(el)=>{
+				setStore({agenda:el})
+				let { agenda } = getStore()
+				console.log("LA AGENDA ES" + agenda )
+			  },
+		}
+	};
 };
 
 export default getState;
