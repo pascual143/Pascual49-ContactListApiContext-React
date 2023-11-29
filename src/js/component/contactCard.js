@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import ProfilePic from '../../img/profile.jpg';
+import ProfilePic from "../../img/profile.jpg";
 
 export const ContactCard = (props) => {
   const { store, actions } = useContext(Context);
@@ -43,9 +43,10 @@ export const ContactCard = (props) => {
       />
       <div className="d-flex gap-2 w-100 justify-content-between">
         <div className="text-start">
-          <h6 className="mb-3 fs-5"> {props.info.full_name}</h6>
+          <Link to="/contacts">
+            <h6 className="mb-3 fs-5"> {props.info.full_name}</h6>
+          </Link>
           <h6 className="mb-1 opacity-50">
-            {" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

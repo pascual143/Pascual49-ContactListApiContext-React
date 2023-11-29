@@ -8,11 +8,14 @@ const getState = ({ getStore, getActions, setStore }) => {
     },
     actions: {
       // Get all users (agenda_slugs).
-      loadAgendas: () => {
+      loadAgendas: async () => {
+        let baseUrl = `https://playground.4geeks.com/apis/fake/contact/agenda`;
         try {
-          fetch("https://playground.4geeks.com/apis/fake/contact/agenda")
+          let response = await fetch(baseUrl)
             .then((response) => response.json())
             .then((users) => setStore({ agendas: users }));
+          if (!response.ok)
+            return response.status
         } catch (error) {
           console.error(error);
         }
@@ -24,13 +27,14 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       // Load contacts for current user.
-      loadContacts: (currentUser) => {
+      loadContacts: async (currentUser) => {
+        let baseUrl = `https://playground.4geeks.com/apis/fake/contact/agenda/${currentUser}`
         try {
-          fetch(
-            `https://playground.4geeks.com/apis/fake/contact/agenda/${currentUser}`
-          )
+          let response = await fetch(baseUrl)
             .then((response) => response.json())
             .then((contactList) => setStore({ contacts: [...contactList] }));
+            if (!response.ok)
+            return response.status
         } catch (error) {
           console.log(error);
         }
