@@ -14,8 +14,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           let response = await fetch(baseUrl)
             .then((response) => response.json())
             .then((users) => setStore({ agendas: users }));
-          if (!response.ok)
-            return response.status
+          if (!response.ok) return response.status;
         } catch (error) {
           console.error(error);
         }
@@ -28,13 +27,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       // Load contacts for current user.
       loadContacts: async (currentUser) => {
-        let baseUrl = `https://playground.4geeks.com/apis/fake/contact/agenda/${currentUser}`
+        let baseUrl = `https://playground.4geeks.com/apis/fake/contact/agenda/${currentUser}`;
         try {
           let response = await fetch(baseUrl)
             .then((response) => response.json())
             .then((contactList) => setStore({ contacts: [...contactList] }));
-            if (!response.ok)
-            return response.status
+          if (!response.ok) return response.status;
         } catch (error) {
           console.log(error);
         }
