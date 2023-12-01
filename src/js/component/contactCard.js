@@ -1,4 +1,6 @@
 import React, { useContext } from "react";
+import PropTypes from 'prop-types';
+
 
 import { Context } from "../store/appContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -118,4 +120,12 @@ export const ContactCard = (props) => {
       </div>
     </a>
   );
+};
+
+ContactCard.propTypes = {
+  full_name: PropTypes.string,
+  id: PropTypes.number,
+  address: PropTypes.string,
+  phone: PropTypes.number,
+  email: PropTypes.any.isRequired
 };

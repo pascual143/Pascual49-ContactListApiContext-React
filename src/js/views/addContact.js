@@ -43,6 +43,7 @@ export const AddContact = () => {
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Enter your full name."
               aria-describedby="nameHelp"
+              required
             />
           </div>
 
@@ -57,6 +58,7 @@ export const AddContact = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address."
               aria-describedby="emailHelp"
+              required
             />
           </div>
 
@@ -70,6 +72,7 @@ export const AddContact = () => {
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Enter your phone number."
               id="phoneNumber"
+              required
             />
           </div>
 
@@ -83,6 +86,7 @@ export const AddContact = () => {
               onChange={(e) => setAddress(e.target.value)}
               placeholder="Enter your physical address."
               id="physicalAddress"
+              required
             />
           </div>
 
